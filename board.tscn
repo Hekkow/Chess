@@ -4,3 +4,25 @@
 
 [node name="Board" type="Node2D"]
 script = ExtResource("1_trq88")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Container" type="Container" parent="CanvasLayer"]
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -267.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Container"]
+layout_mode = 2
+
+[node name="Undo" type="Button" parent="CanvasLayer/Container/HBoxContainer"]
+layout_mode = 2
+text = "Undo"
+
+[node name="Redo" type="Button" parent="CanvasLayer/Container/HBoxContainer"]
+layout_mode = 2
+text = "Redo"

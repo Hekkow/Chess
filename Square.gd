@@ -20,7 +20,6 @@ func _ready():
 func on_click(event: InputEvent):
 	if event.is_action_pressed("click"):
 		clicked.emit(self)
-		#setPiece(Pawn.new("w"))
 		
 func setXY(_pos):
 	self.pos = _pos
