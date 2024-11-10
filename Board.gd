@@ -9,6 +9,7 @@ var currently_selected: Square
 var possible_moves
 var previous_moves = []
 var next_moves = []
+var currently_highlighted = []
 var starting_pieces = {
 	Vector2i(0, 1): [Pawn, "w"],
 	Vector2i(1, 1): [Pawn, "w"],
@@ -18,6 +19,7 @@ var starting_pieces = {
 	Vector2i(5, 1): [Pawn, "w"],
 	Vector2i(6, 1): [Pawn, "w"],
 	Vector2i(7, 1): [Pawn, "w"],
+	Vector2i(7, 6): [Pawn, "b"],
 	Vector2i(7, 3): [Pawn, "b"],
 }
 
@@ -44,55 +46,59 @@ func _ready():
 func on_piece_clicked(square: Square):
 	if viewing_moves:
 		if square in possible_moves:
-			highlight_squares(currently_selected.getMoves(board), currently_selected, false)
 			var move = Move.new(currently_selected, square)
+			reset()
 			previous_moves.append(move)
 			move.activate()
 			next_moves = []
-			possible_moves = []
-			viewing_moves = false
-			currently_selected = null
-			swap_turn()
+			
 		elif not square.piece or currently_selected == square:
-			highlight_squares(square.getMoves(board), square, false)
+			unhighlight_squares()
 			viewing_moves = false
 		elif square.getPieceColor() == currently_selected.getPieceColor():
-			highlight_squares(currently_selected.getMoves(board), currently_selected, false)
-			highlight_squares(square.getMoves(board), square, true)
-		
+			unhighlight_squares()
+			highlight_squares(square)
+			currently_selected = square
 	else:
 		if square.piece and square.getPieceColor() == turn:
-			highlight_squares(square.getMoves(board), square, true)
+			highlight_squares(square)
 			viewing_moves = true
-	currently_selected = square
+			currently_selected = square
 
 func swap_turn():
 	turn = ['w', 'b'].filter(func (t): return t != turn)[0]
 
-func highlight_squares(squares, current, on):
-	squares = squares.map(func (s): return board[s])
-	if on:
-		possible_moves = squares
-		current.highlight()
-		for square in squares:
-			square.highlight()
-	else:
-		current.unhighlight()
-		for square in squares:
-			square.unhighlight()
-
+func highlight_squares(square):
+	currently_highlighted = square.getMoves(board).map(func (s): return board[s])
+	possible_moves = currently_highlighted
+	currently_highlighted.append(square)
+	for s in currently_highlighted:
+		s.highlight()
+func unhighlight_squares():
+	for square in currently_highlighted:
+		square.unhighlight()
 func undo():
+	
 	var previous_move = previous_moves.pop_back()
 	if not previous_move:
 		return
 	previous_move.undo()
 	next_moves.append(previous_move)
+	reset()
+	
 func redo():
 	var next_move = next_moves.pop_back()
 	if not next_move:
 		return
 	next_move.activate()
 	previous_moves.append(next_move)
+	reset()
 
+func reset():
+	unhighlight_squares()
+	possible_moves = []
+	viewing_moves = false
+	currently_selected = null
+	swap_turn()
 
 

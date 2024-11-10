@@ -13,7 +13,7 @@ func _init(_from_square: Square, _to_square: Square) -> void:
 func activate() -> void:
 	original_from_piece = from_square.piece
 	original_to_piece = to_square.piece
-	if original_from_piece is Pawn:
+	if original_from_piece is Pawn and not original_from_piece.movedOnce:
 		original_from_piece.movedOnce = true
 		set_pawn_moved_once = true
 	to_square.setPiece(original_from_piece)
