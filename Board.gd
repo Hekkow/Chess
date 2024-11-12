@@ -21,6 +21,11 @@ var starting_pieces = {
 	Vector2i(7, 1): [Pawn, "w"],
 	Vector2i(7, 6): [Pawn, "b"],
 	Vector2i(7, 3): [Pawn, "b"],
+	Vector2i(5, 5): [Rook, "b"],
+	Vector2i(5, 6): [Bishop, "w"],
+	Vector2i(5, 7): [Queen, 'w'],
+	Vector2i(4, 5): [Knight, 'w'],
+	Vector2i(5, 2): [King, 'w'],
 }
 
 var board = {}
@@ -45,7 +50,7 @@ func _ready():
 		
 func on_piece_clicked(square: Square):
 	if viewing_moves:
-		if square in possible_moves:
+		if square in possible_moves and currently_selected != square:
 			var move = Move.new(currently_selected, square)
 			reset()
 			previous_moves.append(move)
@@ -55,12 +60,12 @@ func on_piece_clicked(square: Square):
 		elif not square.piece or currently_selected == square:
 			unhighlight_squares()
 			viewing_moves = false
-		elif square.getPieceColor() == currently_selected.getPieceColor():
+		elif square.get_piece_color() == currently_selected.get_piece_color():
 			unhighlight_squares()
 			highlight_squares(square)
 			currently_selected = square
 	else:
-		if square.piece and square.getPieceColor() == turn:
+		if square.piece and square.get_piece_color() == turn:
 			highlight_squares(square)
 			viewing_moves = true
 			currently_selected = square
@@ -69,7 +74,7 @@ func swap_turn():
 	turn = ['w', 'b'].filter(func (t): return t != turn)[0]
 
 func highlight_squares(square):
-	currently_highlighted = square.getMoves(board).map(func (s): return board[s])
+	currently_highlighted = square.get_moves(board).map(func (s): return board[s])
 	possible_moves = currently_highlighted
 	currently_highlighted.append(square)
 	for s in currently_highlighted:

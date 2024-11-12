@@ -16,6 +16,9 @@ func _ready():
 	else:
 		background.color = Color(0.99607843160629, 0.89803922176361, 0.59607845544815)
 	background.gui_input.connect(on_click)
+	var label = Label.new()
+	add_child(label)
+	label.text = str(pos)
 	
 func on_click(event: InputEvent):
 	if event.is_action_pressed("click"):
@@ -34,12 +37,12 @@ func setPiece(_piece, _color = null):
 	else:
 		piece = _piece
 	sprite.texture = piece.image
-func getMoves(board):
+func get_moves(board):
 	if not piece:
 		return []
-	return piece.getMoves(board, pos)
+	return piece.get_moves(board, pos)
 	
-func getPieceColor():
+func get_piece_color():
 	if piece:
 		return piece.color
 	else:
